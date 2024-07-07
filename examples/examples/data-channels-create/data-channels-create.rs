@@ -172,6 +172,10 @@ async fn main() -> Result<()> {
 
     // Wait for the answer to be pasted
     let line = signal::must_read_stdin()?;
+
+    // Optionally read the SDP string from a file 
+    let line = signal::check_file(&line)?;
+    
     let desc_data = signal::decode(line.as_str())?;
     let answer = serde_json::from_str::<RTCSessionDescription>(&desc_data)?;
 

@@ -86,6 +86,27 @@ pub fn must_read_stdin() -> Result<String> {
     Ok(line)
 }
 
+//check if line is like "file://myfile.txt"
+//if it is, then return the full contents of that file
+//otherwise, just return the provided line as a String
+//returns Err if the file can't be opened
+const FILE_PREFIX: &str = "file://";
+pub fn check_file(line: &str) -> Result<String> {
+    use std::io::Read;
+
+    match line.strip_prefix(FILE_PREFIX) {
+        Some(path) => {
+            let mut file = std::fs::File::open(path)?;
+            let mut content = String::new();
+            file.read_to_string(&mut content)?;
+            Ok(content.trim().to_owned())
+        },
+        None => {
+            Ok(line.to_owned())
+        }
+    }
+}
+
 // Allows compressing offer/answer to bypass terminal input limits.
 // const COMPRESS: bool = false;
 
